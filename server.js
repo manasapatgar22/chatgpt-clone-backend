@@ -9,13 +9,11 @@ const PORT = process.env.PORT || 8080;
 
 // Allow your GitHub Pages site to call this API
 app.use(cors({
-    origin: [
-        process.env.ALLOWED_ORIGIN,                // e.g. https://your-username.github.io
-        `${process.env.ALLOWED_ORIGIN}/ai-assistant-frontend/` // if using a project page
-    ],
+    origin: process.env.ALLOWED_ORIGIN,
     methods: ["POST"],
     allowedHeaders: ["Content-Type"]
 }));
+
 
 app.use(express.json());
 
@@ -25,11 +23,13 @@ app.get("/", (_req, res) => res.send("OK"));
 // Proxy endpoint that keeps your key secret
 app.post("/api/chat", async (req, res) => {
     try {
-        const prompt = (req.body?.prompt || "").toString();
+        const prompt = (req.body?.prompt || "").toString().trim();
         if (!prompt) return res.status(400).json({ error: "Missing 'prompt'." });
 
+        console.log("Prompt received:", prompt);
+
         const upstream = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.API_KEY}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -55,4 +55,5 @@ app.post("/api/chat", async (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server listening on ${PORT}`);
 });
+
 
