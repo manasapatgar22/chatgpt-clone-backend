@@ -7,20 +7,27 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// Allow your GitHub Pages site to call this API
+// Enable CORS for your GitHub Pages frontend
 app.use(cors({
-    origin: process.env.ALLOWED_ORIGIN,
-    methods: ["POST"],
+    origin: process.env.ALLOWED_ORIGIN,   // e.g., https://manasapatgar22.github.io
+    methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type"]
 }));
 
-
+// Parse JSON
 app.use(express.json());
 
-// Simple health check
+// Handle preflight OPTIONS requests
+app.options("*", cors({
+    origin: process.env.ALLOWED_ORIGIN,
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type"]
+}));
+
+// Health check
 app.get("/", (_req, res) => res.send("OK"));
 
-// Proxy endpoint that keeps your key secret
+// Chat API endpoint
 app.post("/api/chat", async (req, res) => {
     try {
         const prompt = (req.body?.prompt || "").toString().trim();
@@ -52,9 +59,7 @@ app.post("/api/chat", async (req, res) => {
     }
 });
 
+// Start server
 app.listen(PORT, () => {
     console.log(`Server listening on ${PORT}`);
 });
-
-
-
