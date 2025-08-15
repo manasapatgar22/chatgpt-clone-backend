@@ -10,7 +10,8 @@ const PORT = process.env.PORT || 5000;
 
 const allowedOrigins = [
     "http://localhost:5500",
-    "http://127.0.0.1:5500"
+    "http://127.0.0.1:5500",
+    "https://manasapatgar22.github.io"
 ];
 
 app.use(cors({
@@ -22,7 +23,9 @@ app.use(cors({
             return callback(new Error(msg), false);
         }
         return callback(null, true);
-    }
+    },
+     methods: ["GET", "POST", "OPTIONS"], // allow OPTIONS for preflight
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 app.use(express.json());
 
@@ -35,7 +38,7 @@ app.post("/api/ask", async (req, res) => {
 
     try {
         const response = await fetch(
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=" +
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" +
             process.env.GEMINI_API_KEY,
             {
                 method: "POST",
@@ -61,3 +64,4 @@ app.post("/api/ask", async (req, res) => {
 
 
 app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
+
