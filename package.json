@@ -1,8 +1,11 @@
 {
-  "name": "ai-assistant-backend",
+  "name": "chatgpt-clone-backend",
   "version": "1.0.0",
   "type": "module",
   "main": "server.js",
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "start": "node server.js"
   },
